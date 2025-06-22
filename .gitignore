@@ -197,4 +197,4 @@ cython_debug/
 .cursorindexingignore
 model.pkl
 __pycache__
-Data
+Datamodel.pkl
