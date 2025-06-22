@@ -40,6 +40,14 @@ def predict(input_df):
     probabilities = model.predict_proba(input_df)[:, 1]
     return probabilities
 
+# THRESHOLD = 0.3  # Lowering threshold increases recall
+
+# def predict(input_df):
+#     input_df = preprocess_input(input_df)
+#     probabilities = model.predict_proba(input_df)[:, 1]
+#     predictions = (probabilities >= THRESHOLD).astype(int)
+#     return probabilities, predictions
+
 # Upload CSV
 uploaded_file = st.file_uploader("Upload CSV File for Prediction", type="csv")
 
