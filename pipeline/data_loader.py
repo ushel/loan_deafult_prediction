@@ -1,8 +1,8 @@
 import pandas as pd
-from config import DATA_FILE
+from pipeline.config import DATA_PATH
 
-def load_dataset(path="Data/Dataset.csv"):
-    df = pd.read_csv(path, low_memory=False)
-    df["Default"] = pd.to_numeric(df["Default"], errors="coerce")
-    df = df.dropna(subset=["Default"])
+def load_data():
+    df = pd.read_csv(DATA_PATH, low_memory=False)
+    df = df[df["Default"].notnull()]
+    df["Default"] = df["Default"].astype(int)
     return df

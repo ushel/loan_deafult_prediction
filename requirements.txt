@@ -5,3 +5,5 @@ imbalanced-learn>=0.8
 matplotlib>=3.4
 seaborn>=0.11
 statsmodels>=0.12
+mlflow
+dagshub
