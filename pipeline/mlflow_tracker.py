@@ -37,3 +37,45 @@ def log_experiment(model, report, roc_auc):
 
         joblib.dump(model, "model.pkl")
         mlflow.log_artifact("model.pkl")
+        
+def compare_and_promote_model(new_report):
+    client = MlflowClient()
+    model_name = "LoanDefaultModel"
+
+    # Get latest production model version
+    try:
+        prod_versions = [mv for mv in client.get_latest_versions(model_name, stages=["Production"])]
+        if not prod_versions:
+            print("No production model found. Promoting new model.")
+            _register_and_promote_latest_run(model_name)
+            return
+
+        prod_run_id = prod_versions[0].run_id
+        prod_run = client.get_run(prod_run_id)
+        old_recall = float(prod_run.data.metrics.get("recall", 0))
+    
+        # Compare with current
+        new_recall = new_report["recall"]
+        if new_recall > old_recall:
+            print(f"New model recall ({new_recall}) is better than production ({old_recall}). Promoting new model.")
+            _register_and_promote_latest_run(model_name)
+        else:
+            print(f"New model recall ({new_recall}) did not improve over production ({old_recall}).")
+
+    except Exception as e:
+        print(f"Error during model promotion check: {str(e)}")
+
+
+def _register_and_promote_latest_run(model_name):
+    client = MlflowClient()
+    run = mlflow.active_run()
+    if not run:
+        raise Exception("No active run found to register.")
+
+    result = mlflow.register_model(f"runs:/{run.info.run_id}/model", model_name)
+    client.transition_model_version_stage(
+        name=model_name,
+        version=result.version,
+        stage="Production",
+        archive_existing_versions=True
+    )

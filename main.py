@@ -3,10 +3,11 @@ from pipeline.model import build_model
 from pipeline.evaluate import evaluate_model
 from pipeline.feature_selection import chi2_feature_selection, anova_feature_selection
 # from pipeline.model2 import build_model2
-from pipeline.mlflow_tracker import log_experiment
+from pipeline.mlflow_tracker import log_experiment, compare_and_promote_model
 from sklearn.model_selection import train_test_split
 from pipeline.hyperparameter_tuning import tune_hyperparameters
 import pandas as pd
+import argparse
 
 CATEGORICAL_COLS = [
     "Client_Gender", "Client_Marital_Status", "Client_Housing_Type",
@@ -70,7 +71,7 @@ NUMERIC_COLS = [
 # if __name__ == "__main__":
 #     main()
 #  model 1 with hyperparameters
-def main():
+def main(run_name=None):
     df = load_data()
     X = df.drop(columns=["Default"])
     y = df["Default"]
@@ -92,9 +93,13 @@ def main():
 
     report, auc = evaluate_model(model, X_test, y_test)
     log_experiment(model, report, auc)
+    compare_and_promote_model(report)
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--run-name", type=str, default="default_run")
+    args = parser.parse_args()
+    main(run_name=args.run_name)
 
 # XGBOOST model
 # def main():
