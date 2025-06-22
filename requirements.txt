@@ -9,3 +9,5 @@ mlflow
 dagshub
 streamlit
 watchdog
+imblearn
+XGBOOST
