@@ -97,7 +97,7 @@ def main(run_name=None):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-name", type=str, default="default_run")
+    parser.add_argument("--run-name", type=str, default=None)
     args = parser.parse_args()
     main(run_name=args.run_name)
 
