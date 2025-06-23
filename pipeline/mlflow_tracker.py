@@ -9,11 +9,11 @@ from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_sc
 # os.environ["MLFLOW_TRACKING_USERNAME"] = "utkarsh.shelke03"
 # os.environ["MLFLOW_TRACKING_PASSWORD"] = "bdef59aa61d087c002100e05ccb84c2f94083565"
 
-username = os.getenv("MLFLOW_TRACKING_USERNAME")
-password = os.getenv("MLFLOW_TRACKING_PASSWORD")
+# username = os.getenv("MLFLOW_TRACKING_USERNAME")
+# password = os.getenv("MLFLOW_TRACKING_PASSWORD")
 
-os.environ["MLFLOW_TRACKING_USERNAME"] = username
-os.environ["MLFLOW_TRACKING_PASSWORD"] = password
+# os.environ["MLFLOW_TRACKING_USERNAME"] = username
+# os.environ["MLFLOW_TRACKING_PASSWORD"] = password
 
 
 dagshub.init(repo_owner='utkarsh.shelke03', repo_name='loan_deafult_prediction', mlflow=True)
