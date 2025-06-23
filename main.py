@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 from pipeline.hyperparameter_tuning import tune_hyperparameters
 import pandas as pd
 import argparse
+import os
+from dotenv import load_dotenv
 
 CATEGORICAL_COLS = [
     "Client_Gender", "Client_Marital_Status", "Client_Housing_Type",
@@ -18,6 +20,9 @@ NUMERIC_COLS = [
     'Client_Income', 'Credit_Amount', 'Loan_Annuity', 'Age_Days',
     'Employed_Days', 'Registration_Days', 'ID_Days', 'Score_Source_3'
 ]
+load_dotenv()
+os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
+os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 
 # def main():
 #     df = load_data()
