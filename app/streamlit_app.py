@@ -1,9 +1,12 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import streamlit as st
 import pandas as pd
 import joblib
 from drift_detector import detect_drift
 import mlflow
-from mlflow_tracker import log_inference_metrics
+from pipeline.mlflow_tracker import log_inference_metrics
 
 
 st.title("Loan Default Prediction")
@@ -97,7 +100,7 @@ if uploaded_file is not None:
         y_true = input_df['Default'] if 'Default' in input_df.columns else None
 
         # Log inference metrics to MLflow
-        drift_report = detect_drift(input_df)
+        drift_report = detect_drift(reference_df,input_df)
         log_inference_metrics(y_true=y_true, y_pred=predictions, drift_report=drift_report)
 
         if drift_report and drift_report.get("drift_detected"):

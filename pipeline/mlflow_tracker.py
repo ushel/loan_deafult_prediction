@@ -4,6 +4,8 @@ from pipeline.config import EXPERIMENT_NAME
 import dagshub
 import os
 import joblib
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
+
 os.environ["MLFLOW_TRACKING_USERNAME"] = "utkarshshelke"
 os.environ["MLFLOW_TRACKING_PASSWORD"] = "bdef59aa61d087c002100e05ccb84c2f94083565"
 
