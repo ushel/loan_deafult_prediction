@@ -34,15 +34,28 @@ def log_experiment(model, report, roc_auc):
         mlflow.log_metric("f1_score", report['1']['f1-score'])
         mlflow.log_metric("precision", report['1']['precision'])
         mlflow.log_metric("recall", report['1']['recall'])
+        if drift_report:
+            mlflow.log_dict(drift_report, "drift_report.json")
 
         joblib.dump(model, "model.pkl")
         mlflow.log_artifact("model.pkl")
         
+def log_inference_metrics(y_true, y_pred, drift_report=None, model_name="LoanDefaultModel"):
+    with mlflow.start_run():
+        if y_true is not None:
+            mlflow.log_metric("inference_precision", precision_score(y_true, y_pred))
+            mlflow.log_metric("inference_recall", recall_score(y_true, y_pred))
+            mlflow.log_metric("inference_f1", f1_score(y_true, y_pred))
+
+        if drift_report:
+            mlflow.log_dict(drift_report, "inference_drift_report.json")
+
+        joblib.dump(y_pred, "predictions.pkl")
+        mlflow.log_artifact("predictions.pkl")
 def compare_and_promote_model(new_report):
     client = MlflowClient()
     model_name = "LoanDefaultModel"
 
-    # Get latest production model version
     try:
         prod_versions = [mv for mv in client.get_latest_versions(model_name, stages=["Production"])]
         if not prod_versions:
@@ -53,8 +66,7 @@ def compare_and_promote_model(new_report):
         prod_run_id = prod_versions[0].run_id
         prod_run = client.get_run(prod_run_id)
         old_recall = float(prod_run.data.metrics.get("recall", 0))
-    
-        # Compare with current
+
         new_recall = new_report["recall"]
         if new_recall > old_recall:
             print(f"New model recall ({new_recall}) is better than production ({old_recall}). Promoting new model.")
@@ -64,7 +76,6 @@ def compare_and_promote_model(new_report):
 
     except Exception as e:
         print(f"Error during model promotion check: {str(e)}")
-
 
 def _register_and_promote_latest_run(model_name):
     client = MlflowClient()
