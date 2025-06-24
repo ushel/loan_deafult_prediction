@@ -16,6 +16,10 @@ jobs:
       MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
 
     steps:
+
+      - name: Debug Secrets
+        run: env | grep SECRET
+      
       - name: Checkout repository
         uses: actions/checkout@v3
 
