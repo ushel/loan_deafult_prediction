@@ -5,7 +5,7 @@ import dagshub
 import os
 import joblib
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
-
+from drift_detector import detect_drift
 # os.environ["MLFLOW_TRACKING_USERNAME"] = "utkarsh.shelke03"
 # os.environ["MLFLOW_TRACKING_PASSWORD"] = "bdef59aa61d087c002100e05ccb84c2f94083565"
 
