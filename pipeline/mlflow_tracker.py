@@ -42,8 +42,8 @@ def log_experiment(model, report, roc_auc):
         mlflow.log_metric("f1_score", report['1']['f1-score'])
         mlflow.log_metric("precision", report['1']['precision'])
         mlflow.log_metric("recall", report['1']['recall'])
-        if drift_report:
-            mlflow.log_dict(drift_report, "drift_report.json")
+        # if drift_report:
+        #     mlflow.log_dict(drift_report, "drift_report.json")
 
         joblib.dump(model, "model.pkl")
         mlflow.log_artifact("model.pkl")
@@ -60,6 +60,7 @@ def log_inference_metrics(y_true, y_pred, drift_report=None, model_name="LoanDef
 
         joblib.dump(y_pred, "predictions.pkl")
         mlflow.log_artifact("predictions.pkl")
+
 def compare_and_promote_model(new_report):
     client = MlflowClient()
     model_name = "LoanDefaultModel"
