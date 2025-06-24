@@ -16,7 +16,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_sc
 # os.environ["MLFLOW_TRACKING_PASSWORD"] = password
 
 
-dagshub.init(repo_owner='utkarsh.shelke03', repo_name='loan_deafult_prediction', mlflow=True)
+# dagshub.init(repo_owner='utkarsh.shelke03', repo_name='loan_deafult_prediction', mlflow=True)
 mlflow.set_tracking_uri("https://dagshub.com/utkarsh.shelke03/loan_deafult_prediction.mlflow")
 mlflow.set_experiment(EXPERIMENT_NAME)
 
