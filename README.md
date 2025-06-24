@@ -4,6 +4,7 @@ conda create -n sub
 conda activate sub
 conda install pip
 
+add dagshub token to env
 pip install -r requirements.txt
 
 conda install -c conda-forge libomp for mac want to run XGBOOST not working
