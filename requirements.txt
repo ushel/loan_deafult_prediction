@@ -11,3 +11,4 @@ streamlit
 watchdog
 imblearn
 XGBOOST
+python-dotenv
