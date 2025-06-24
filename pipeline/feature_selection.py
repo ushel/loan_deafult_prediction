@@ -1,7 +1,11 @@
 import pandas as pd
 from sklearn.feature_selection import SelectKBest, chi2, f_classif
 from sklearn.preprocessing import LabelEncoder
-
+import pandas as pd
+import numpy as np
+from scipy.stats import pearsonr
+import matplotlib.pyplot as plt
+import seaborn as sns
 def chi2_feature_selection(X, y, k=10):
     X = X.copy()
     cat_cols = X.select_dtypes(include='object').columns
@@ -25,3 +29,4 @@ def anova_feature_selection(X, y, k=10):
     selector.fit(X, y)
     selected_features = X.columns[selector.get_support()].tolist()
     return selected_features
+
