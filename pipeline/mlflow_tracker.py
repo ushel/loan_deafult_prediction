@@ -87,7 +87,7 @@ def compare_and_promote_model(new_report):
     except Exception as e:
         print(f"Error during model promotion check: {str(e)}")
 
-def _register_and_promote_latest_run(model_name="loan_default_model"):
+def _register_and_promote_latest_run(model_name="LoanDefaultModel"):
     client = MlflowClient()
     
     # Ensure active run exists
