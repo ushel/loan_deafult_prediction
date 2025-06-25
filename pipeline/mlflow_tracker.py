@@ -87,16 +87,34 @@ def compare_and_promote_model(new_report):
     except Exception as e:
         print(f"Error during model promotion check: {str(e)}")
 
-def _register_and_promote_latest_run(model_name):
+def _register_and_promote_latest_run(model_name="loan_default_model"):
     client = MlflowClient()
+    
+    # Ensure active run exists
     run = mlflow.active_run()
     if not run:
-        raise Exception("No active run found to register.")
+        raise Exception("No active MLflow run found. Please start a run using `mlflow.start_run()`.")
 
-    result = mlflow.register_model(f"runs:/{run.info.run_id}/model", model_name)
+    # Log and register the model
+    model_uri = f"runs:/{run.info.run_id}/model"
+    
+    print(f"Registering model from URI: {model_uri}")
+    result = mlflow.register_model(model_uri, model_name)
+    
+    # Optional: Wait until model is registered (depends on backend, avoid premature transition)
+    import time
+    for _ in range(10):  # wait up to 10 seconds
+        model_version_details = client.get_model_version(name=model_name, version=result.version)
+        if model_version_details.status == "READY":
+            break
+        time.sleep(1)
+    
+    # Promote the newly registered model to Production
     client.transition_model_version_stage(
         name=model_name,
         version=result.version,
         stage="Production",
         archive_existing_versions=True
     )
+    
+    print(f" Model '{model_name}' version {result.version} promoted to Production.")
