@@ -1,9 +1,9 @@
 
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 from pipeline.data_loader import load_data
 from pipeline.model import build_model
 from pipeline.evaluate import evaluate_model
-from pipeline.feature_selection import chi2_feature_selection, anova_feature_selection
+from pipeline.feature_selection import chi2_feature_selection, anova_feature_selection,preprocess_and_select_numeric_features
 # from pipeline.model2 import build_model2
 from pipeline.mlflow_tracker import log_experiment, compare_and_promote_model
 from sklearn.model_selection import train_test_split
@@ -11,17 +11,18 @@ from pipeline.hyperparameter_tuning import tune_hyperparameters
 import pandas as pd
 import argparse
 import os
+import numpy as np
 
-CATEGORICAL_COLS = [
-    "Client_Gender", "Client_Marital_Status", "Client_Housing_Type",
-    "Client_Income_Type", "Client_Education", "Loan_Contract_Type"
-]
+# CATEGORICAL_COLS = [
+#     "Client_Gender", "Client_Marital_Status", "Client_Housing_Type",
+#     "Client_Income_Type", "Client_Education", "Loan_Contract_Type"
+# ]
 
-NUMERIC_COLS = [
-    'Client_Income', 'Credit_Amount', 'Loan_Annuity', 'Age_Days',
-    'Employed_Days', 'Registration_Days', 'ID_Days', 'Score_Source_3'
-]
-# load_dotenv()
+# NUMERIC_COLS = [
+#     'Client_Income', 'Credit_Amount', 'Loan_Annuity', 'Age_Days',
+#     'Employed_Days', 'Registration_Days', 'ID_Days', 'Score_Source_3'
+# ]
+load_dotenv()
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 
@@ -77,13 +78,20 @@ os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
 # if __name__ == "__main__":
 #     main()
 #  model 1 with hyperparameters
+
+
 def main(run_name=None):
     df = load_data()
     X = df.drop(columns=["Default"])
     y = df["Default"]
+    
+    CATEGORICAL_COLS = X.select_dtypes(include="object").columns.tolist()
+    NUMERIC_COLS = X.select_dtypes(include=["number"]).columns.tolist()
 
+    # NUMERIC_COLS_1 = df.select_dtypes(include=[np.number]).columns.tolist()
     cat_features = chi2_feature_selection(X[CATEGORICAL_COLS], y, k=5)
-    num_features = anova_feature_selection(X[NUMERIC_COLS], y, k=5)
+    # num_features = anova_feature_selection(X[NUMERIC_COLS], y, k=5)
+    num_features = preprocess_and_select_numeric_features(df, NUMERIC_COLS)
 
     selected_features = cat_features + num_features
 

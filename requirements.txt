@@ -12,3 +12,4 @@ watchdog
 imblearn
 XGBOOST
 python-dotenv
+scipy
