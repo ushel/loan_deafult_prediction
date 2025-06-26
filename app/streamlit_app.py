@@ -7,6 +7,8 @@ import joblib
 from drift_detector import detect_drift
 import mlflow
 from pipeline.mlflow_tracker import log_inference_metrics
+from pipeline.feature_selection import chi2_feature_selection, anova_feature_selection,preprocess_and_select_numeric_features
+import numpy as np
 
 
 st.title("Loan Default Prediction")
@@ -23,24 +25,33 @@ CATEGORICAL_COLS = ['Client_Education', 'Client_Housing_Type', 'Client_Income_Ty
 REFERENCE_DATA_PATH = "Data/Dataset.csv"
 reference_df = pd.read_csv(REFERENCE_DATA_PATH)
 
+
 def preprocess_input(input_df):
-    input_df = input_df.copy()
+    X = input_df.drop(columns=["Default"])
+    y = input_df["Default"]
+    CATEGORICAL_COLS = X.select_dtypes(include="object").columns.tolist()
+    NUMERIC_COLS = X.select_dtypes(include=["number"]).columns.tolist()
 
-    # Ensure numeric columns are numeric and imputed
-    for col in NUMERIC_COLS:
-        if col in input_df.columns:
-            input_df[col] = pd.to_numeric(input_df[col], errors='coerce')
-            median_value = input_df[col].median()
-            input_df[col] = input_df[col].fillna(median_value)
-        else:
-            input_df[col] = 0  # Default value if column missing
+    cat_features = chi2_feature_selection(X[CATEGORICAL_COLS], y, k=5)
+    # num_features = anova_feature_selection(X[NUMERIC_COLS], y, k=5)
+    num_features = preprocess_and_select_numeric_features(input_df, NUMERIC_COLS)
+#     input_df = input_df.copy()
 
-    # Ensure categorical columns are string and fill missing values
-    for col in CATEGORICAL_COLS:
-        if col in input_df.columns:
-            input_df[col] = input_df[col].astype(str).fillna("missing")
-        else:
-            input_df[col] = "missing"
+#     # Ensure numeric columns are numeric and imputed
+#     for col in NUMERIC_COLS:
+#         if col in input_df.columns:
+#             input_df[col] = pd.to_numeric(input_df[col], errors='coerce')
+#             median_value = input_df[col].median()
+#             input_df[col] = input_df[col].fillna(median_value)
+#         else:
+#             input_df[col] = 0  # Default value if column missing
+
+#     # Ensure categorical columns are string and fill missing values
+#     for col in CATEGORICAL_COLS:
+#         if col in input_df.columns:
+#             input_df[col] = input_df[col].astype(str).fillna("missing")
+#         else:
+#             input_df[col] = "missing"
 
     # Keep only expected columns
     input_df = input_df[NUMERIC_COLS + CATEGORICAL_COLS]
