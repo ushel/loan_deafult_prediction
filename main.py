@@ -12,6 +12,7 @@ import pandas as pd
 import argparse
 import os
 import numpy as np
+import mlflow
 
 # CATEGORICAL_COLS = [
 #     "Client_Gender", "Client_Marital_Status", "Client_Housing_Type",
@@ -25,7 +26,7 @@ import numpy as np
 load_dotenv()
 os.environ["MLFLOW_TRACKING_USERNAME"] = os.getenv("MLFLOW_TRACKING_USERNAME")
 os.environ["MLFLOW_TRACKING_PASSWORD"] = os.getenv("MLFLOW_TRACKING_PASSWORD")
-
+# mlflow.set_tracking_uri("https://dagshub.com/utkarsh.shelke03/loan_deafult_prediction.mlflow")
 # def main():
 #     df = load_data()
 #     X = df.drop(columns=["Default"])
