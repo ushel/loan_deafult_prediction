@@ -18,7 +18,7 @@ from mlflow.tracking import MlflowClient
 
 
 # dagshub.init(repo_owner='utkarsh.shelke03', repo_name='loan_deafult_prediction', mlflow=True)
-mlflow.set_tracking_uri("https://dagshub.com/utkarsh.shelke03/loan_deafult_prediction.mlflow")
+mlflow.set_tracking_uri("https://utkarsh.shelke03:55bbb7475062084353130c086369f4602ba5785e@dagshub.com/utkarsh.shelke03/loan_deafult_prediction.mlflow")
 mlflow.set_experiment(EXPERIMENT_NAME)
 
 # def log_experiment(model, report, roc_auc):
